@@ -1,5 +1,7 @@
 module github.com/alex0206/workplace-accounting
 
+// +heroku goVersion go1.16
+// +heroku install ./cmd/server
 go 1.16
 
 require (
