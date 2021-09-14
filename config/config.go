@@ -13,7 +13,7 @@ import (
 type Config struct {
 	Host             string `envconfig:"HOST"`
 	Port             string `envconfig:"PORT"`
-	PgURL            string `envconfig:"PG_URL"`
+	PgURL            string `envconfig:"DATABASE_URL"`
 	PgMigrationsPath string `envconfig:"PG_MIGRATIONS_PATH"`
 }
 
