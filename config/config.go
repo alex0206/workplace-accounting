@@ -9,7 +9,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-// Config is a config :).
+// Config app config
 type Config struct {
 	Host             string `envconfig:"HOST"`
 	Port             string `envconfig:"PORT"`

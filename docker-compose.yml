@@ -1,8 +1,7 @@
 version: '3.8'
 
 services:
-
-  postgres:
+  db:
     restart: always
     image: postgres:latest
     ports:
@@ -14,21 +13,19 @@ services:
     volumes:
       - workplace:/var/lib/postgresql/data
 
-  accounting_server:
+  server:
     depends_on:
-      - postgres
+      - db
     build:
       context: ./
       dockerfile: docker/server/Dockerfile
-    container_name: server
     ports:
-     - "9090:9090"
+      - "9090:9090"
     environment:
       PORT: "9090"
       PG_URL: "postgres://postgres:postgres@postgres/accounting?sslmode=disable"
       PG_MIGRATIONS_PATH: "file://../../internal/pg/migrations"
-
-    command: ["./../../wait-for-it.sh", "postgres:5432", "--timeout=60", "--", "./server"]
+    command: [ "./../../wait-for-it.sh", "postgres:5432", "--timeout=60", "--", "./server" ]
 
 volumes:
   workplace:

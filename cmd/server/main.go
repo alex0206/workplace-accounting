@@ -39,22 +39,21 @@ func run() error {
 	}
 
 	// connect to Postgres
-	pgDB, err := pg.Dial(cfg.PgURL)
+	pgDB, err := pg.NewDBConnection(context.Background(), cfg.PgURL)
 	if err != nil {
-		return fmt.Errorf("pgdb.Dial failed: %w", err)
+		return fmt.Errorf("pgdb.Connect failed: %w", err)
 	}
+	defer pgDB.Close()
 
 	// run Postgres migrations
-	if pgDB != nil {
-		log.Println("Running PostgreSQL migrations")
-		if err := runPgMigrations(); err != nil {
-			return fmt.Errorf("runPgMigrations failed: %w", err)
-		}
+	log.Println("Running PostgreSQL migrations")
+	if err := runPgMigrations(); err != nil {
+		return fmt.Errorf("runPgMigrations failed: %w", err)
 	}
 
 	srv := &http.Server{
 		Addr:         net.JoinHostPort(cfg.Host, cfg.Port),
-		Handler:      server.Router(),
+		Handler:      server.NewAPIRouter(pgDB),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
