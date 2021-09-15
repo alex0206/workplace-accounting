@@ -21,6 +21,8 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+const ctxSecTimeout = 5
+
 var cfg *config.Config
 
 func init() {
@@ -73,7 +75,7 @@ func run() error {
 	}()
 
 	if err := <-errorChannel; err != nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), ctxSecTimeout*time.Second)
 		defer cancel()
 
 		if err := srv.Shutdown(ctx); err != nil {
