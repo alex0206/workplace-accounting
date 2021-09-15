@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/alex0206/workplace-accounting/internal/api"
@@ -19,7 +21,16 @@ func main() {
 
 	apiClient := api.NewWorkplaceAPIClient(*serverHost)
 	clientServer := services.NewClientService(apiClient)
-	if err := clientServer.UpdateWorkplace(); err != nil {
+	wp, err := clientServer.UpdateWorkplace()
+	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Workplace was successfully updated")
+
+	wpBytes, err := json.MarshalIndent(wp, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(wpBytes))
 }

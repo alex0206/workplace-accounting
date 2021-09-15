@@ -25,29 +25,33 @@ func NewClientService(client APIClient) *ClientService {
 }
 
 // UpdateWorkplace performing workplace creating or updating
-func (s *ClientService) UpdateWorkplace() error {
+func (s *ClientService) UpdateWorkplace() (*model.WorkplaceInfo, error) {
 	ip, err := s.ip()
 	if err != nil {
-		return fmt.Errorf("error getting ip address: %v", err)
+		return nil, fmt.Errorf("error getting ip address: %v", err)
 	}
 
 	hostName, err := os.Hostname()
 	if err != nil {
-		return fmt.Errorf("error getting hostname: %v", err)
+		return nil, fmt.Errorf("error getting hostname: %v", err)
 	}
 
 	currentUser, err := user.Current()
 	if err != nil {
-		return fmt.Errorf("error getting user: %v", err)
+		return nil, fmt.Errorf("error getting user: %v", err)
 	}
 
-	wp := model.WorkplaceInfo{
+	wp := &model.WorkplaceInfo{
 		ComputerName: hostName,
 		IP:           ip,
 		Username:     currentUser.Username,
 	}
 
-	return s.apiClient.UpdateWorkplace(&wp)
+	if err = s.apiClient.UpdateWorkplace(wp); err != nil {
+		return nil, fmt.Errorf("error performing request for updating the workplace: %v", err)
+	}
+
+	return wp, nil
 }
 
 func (s *ClientService) ip() (string, error) {
