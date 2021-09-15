@@ -23,9 +23,9 @@ services:
       - "9090:9090"
     environment:
       PORT: "9090"
-      DATABASE_URL: "postgres://postgres:postgres@postgres/accounting?sslmode=disable"
+      DATABASE_URL: "postgres://postgres:postgres@db/accounting?sslmode=disable"
       PG_MIGRATIONS_PATH: "file://../../internal/pg/migrations"
-    command: [ "./../../wait-for-it.sh", "postgres:5432", "--timeout=60", "--", "./server" ]
+    command: [ "./../../wait-for-it.sh", "db:5432", "--timeout=60", "--", "./server" ]
 
 volumes:
   workplace:
